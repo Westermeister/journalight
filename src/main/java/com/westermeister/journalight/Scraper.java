@@ -39,24 +39,35 @@ class Scraper {
     );
     Thread nprScraperThread = new Thread(nprScraper);
 
+    // Declare UPI scraper's thread.
+    Playwright upiPlaywright = Playwright.create();
+    UPIScraper upiScraper = new UPIScraper(
+      upiPlaywright.chromium().launch().newPage()
+    );
+    Thread upiScraperThread = new Thread(upiScraper);
+
     // Run the threads.
     pbsScraperThread.start();
     nprScraperThread.start();
+    upiScraperThread.start();
 
     // Cleanup time!
     try {
       pbsScraperThread.join();
       nprScraperThread.join();
+      upiScraperThread.join();
     } catch (InterruptedException e) {
       System.err.println("Interrupt occurred!");
       e.printStackTrace();
     }
     pbsPlaywright.close();
     nprPlaywright.close();
+    upiPlaywright.close();
 
     // Combine and return the results.
     result.put("pbs", pbsScraper.output());
     result.put("npr", nprScraper.output());
+    result.put("upi", upiScraper.output());
     return result;
   }
 }
