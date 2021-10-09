@@ -3,3 +3,5 @@
 .settings/
 target/
 .venv/
+.vscode/
+combined.log
